@@ -13,6 +13,7 @@ import static io.restassured.RestAssured.given;
 public class ApiTestOne {
 
     final String reqresUrl = "https://reqres.in/";
+    final String BreakingBadUrl = "https://breaking-bad-quotes.herokuapp.com";
 
     @Test
     public void listOfAllUsers() {
@@ -40,7 +41,7 @@ public class ApiTestOne {
     }
 
     @Test
-    public void getFullName() {
+    public void getFullNameLoopExample () {
 
         String response = given().baseUri(reqresUrl).param("page=2").
                 when().get("api/users").then().extract().response().asString();
@@ -57,7 +58,7 @@ public class ApiTestOne {
     }
 
     @Test
-    public void pojoExample() {
+    public void pojoClassExample() {
 
         JsonRoot getAll = given().baseUri(reqresUrl).param("page=2").
                 when().get("api/users").as(JsonRoot.class);
@@ -74,7 +75,7 @@ public class ApiTestOne {
     }
 
     @Test
-    public void jacksonExample() throws JsonProcessingException {
+    public void jacksonLibraryExample() throws JsonProcessingException {
 
         String response = given().baseUri(reqresUrl).param("page=2").
                 when().get("api/users").asString();
@@ -96,7 +97,7 @@ public class ApiTestOne {
     }
 
     @Test
-    public void breakingBadQuotes() {
+    public void breakingBadQuotesAndAuthors () {
 
         Response response = given().baseUri("https://breaking-bad-quotes.herokuapp.com").
                 when().get("/v1/quotes/5").then().extract().response();
@@ -108,7 +109,7 @@ public class ApiTestOne {
     @Test
     public void breakingBadQuotesList() {
 
-        String response = given().baseUri("https://breaking-bad-quotes.herokuapp.com").
+        String response = given().baseUri(BreakingBadUrl).
                 when().get("/v1/quotes/5").then().extract().response().asString();
 
         JsonPath jsonPath = new JsonPath(response);
@@ -122,7 +123,7 @@ public class ApiTestOne {
     @Test
     public void breakingBadQuotesLoop() {
 
-        String response = given().baseUri("https://breaking-bad-quotes.herokuapp.com").
+        String response = given().baseUri(BreakingBadUrl).
                 when().get("/v1/quotes/5").then().extract().response().asString();
 
         JsonPath jsonPath = new JsonPath(response);
