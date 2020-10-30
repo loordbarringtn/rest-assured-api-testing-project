@@ -137,5 +137,29 @@ public class ApiTestOne {
         }
     }
 
+    @Test
+    public void breakingBadQuotesMap() {
+
+        String response = given().baseUri(BreakingBadUrl).
+                when().get("/v1/quotes/5").then().extract().response().asString();
+
+        JsonPath jsonPath = new JsonPath(response);
+
+        int count = jsonPath.getInt("$.size");
+
+        Map<String, String> quotesAuthors = new HashMap<>();
+
+        for (int i = 0; i < count; i++) {
+            String author = jsonPath.get("author[" + i + "]");
+            String quote = jsonPath.get("quote[" + i + "]");
+            quotesAuthors.put(author,quote);
+        }
+
+        quotesAuthors.forEach((k,v) -> System.out.println((k + ": " + v)));
+    }
+
+
+
+
 
 }
