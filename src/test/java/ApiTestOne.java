@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.Test;
@@ -9,6 +10,8 @@ import pojo.JsonRoot;
 import java.util.*;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class ApiTestOne {
 
@@ -97,9 +100,23 @@ public class ApiTestOne {
     }
 
     @Test
+    public void authorizationExample(){
+
+        String jsonBody = "{\n" +
+                "    \"email\": \"eve.holt@reqres.in\",\n" +
+                "    \"password\": \"cityslicka\"\n" +
+                "}";
+
+        given().baseUri(reqresUrl).contentType(ContentType.JSON).body(jsonBody)
+                .when().post("api/login").then().statusCode(200)
+                .log().body().body("token", is (notNullValue()));
+
+    }
+
+    @Test
     public void breakingBadQuotesAndAuthors () {
 
-        Response response = given().baseUri("https://breaking-bad-quotes.herokuapp.com").
+        Response response = given().baseUri(BreakingBadUrl).
                 when().get("/v1/quotes/5").then().extract().response();
 
         System.out.println(response.prettyPrint());
@@ -157,6 +174,10 @@ public class ApiTestOne {
 
         quotesAuthors.forEach((k,v) -> System.out.println((k + ": " + v)));
     }
+
+
+
+
 
 
 
