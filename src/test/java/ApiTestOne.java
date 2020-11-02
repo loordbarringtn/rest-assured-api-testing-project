@@ -7,6 +7,9 @@ import org.junit.Test;
 import pojo.Data;
 import pojo.JsonRoot;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static io.restassured.RestAssured.given;
@@ -106,6 +109,17 @@ public class ApiTestOne {
                 "    \"email\": \"eve.holt@reqres.in\",\n" +
                 "    \"password\": \"cityslicka\"\n" +
                 "}";
+
+        given().baseUri(reqresUrl).contentType(ContentType.JSON).body(jsonBody)
+                .when().post("api/login").then().statusCode(200)
+                .log().body().body("token", is (notNullValue()));
+
+    }
+
+    @Test
+    public void authorizationExampleWithReadingFile () throws IOException {
+
+        String jsonBody = new String(Files.readAllBytes(Paths.get("src/test/resources/loginData")));
 
         given().baseUri(reqresUrl).contentType(ContentType.JSON).body(jsonBody)
                 .when().post("api/login").then().statusCode(200)
